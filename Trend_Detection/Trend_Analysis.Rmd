@@ -1,0 +1,81 @@
+---
+title: "Trend Analysis"
+author: "Paul Inkenbrandt"
+output: html_document
+---
+```{r}
+x <- c("gte","dplyr","rkt","zoo","lubridate")
+
+lapply(x, require, character.only=T)
+```
+
+#Requirements#
+
+s.resample("M", how="max")
+
+#Import data#
+```{r}
+setInternet2(TRUE)
+file_url <- "https://raw.githubusercontent.com/inkenbrandt/IPython/master/Sample_Na.csv"
+download.file(file_url,destfile="Sample_Na",  mode="wb")
+data <- read.csv("Sample_Na")
+
+# Print date downloaded
+dateDownloaded <- date()
+print(paste('File downloaded ',dateDownloaded))
+
+```
+
+Limit data to parameter of interest. Aggregate station data into monthly or yearly datapoints.
+
+```{r}
+const <- "Sodium"
+
+df <- filter(data, Param==const)
+
+df <- arrange(data, StationId, SampleDate)
+
+df <- mutate(data, type = typeof(SampleDate), month =  )
+
+
+```
+
+#Analyze Data#
+We followed methods by the USGS from the publication: <a href=http://pubs.usgs.gov/sir/2012/5049/>_Methods for Evaluating Temporal Groundwater Quality Data and Results of Decadal-Scale Changes in Chloride, Dissolved Solids, and Nitrate Concentrations in Groundwater in the United States, 1988–2010_</a> to generate our trend detection tools
+
+##Step-Trend Analysis##
+"Thus, samples collected on a decadal time scale are likely to reflect an actual long-term change in concentration in the aquifer rather than a short-term change in concentration resulting from some other source of variability"
+
+###Wilcoxon-Pratt signed-rank test###
+wilcoxsign_test(zero.method = c (“Pratt”))
+wilcox.test(immer$Y1, immer$Y2, paired=TRUE) 
+
+###Fisher's Exact test###
+<a href=https://stat.ethz.ch/R-manual/R-patched/library/stats/html/fisher.test.html>function documentation</a>
+analyze changes in the proportion of samples that exceeded a concentration threshold
+
+fisher.test(x, y = NULL, workspace = 200000, hybrid = FALSE,
+            control = list(), or = 1, alternative = "two.sided",
+            conf.int = TRUE, conf.level = 0.95,
+            simulate.p.value = FALSE, B = 2000)
+
+
+###Turnbull estimator for median change###
+<http://cran.r-project.org/web/packages/gte/gte.pdf>
+
+Fit <- gte(Surv(L, R, type="interval", event=2) ~ Z, data=simul, z=c(10, 20))
+
+
+##Time-Series Analysis##
+
+###Regional Kendall test###
+
+<a href=http://cran.r-project.org/web/packages/rkt/rkt.pdf>rtk package documentation</a>
+<br>
+<a href=http://acwi.gov/monitoring/conference/2006/2006_conference_materials_notes/Concurrent_SessionG/G5Trends/G5_Helsel.pdf>Regional Kendall presentation by Hesel.</a>
+
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
