@@ -4,7 +4,7 @@ author: "Paul Inkenbrandt"
 output: html_document
 ---
 ```{r}
-x <- c("gte","dplyr","rkt","zoo","lubridate")
+x <- c("gte","coin","dplyr","rkt","zoo","lubridate","tidyr")
 
 lapply(x, require, character.only=T)
 ```
@@ -16,9 +16,11 @@ s.resample("M", how="max")
 #Import data#
 ```{r}
 setInternet2(TRUE)
+
 file_url <- "https://raw.githubusercontent.com/inkenbrandt/IPython/master/Sample_Na.csv"
-download.file(file_url,destfile="Sample_Na",  mode="wb")
-data <- read.csv("Sample_Na")
+
+download.file(file_url,destfile="Sample",  mode="wb")
+data <- read.csv("Sample")
 
 # Print date downloaded
 dateDownloaded <- date()
@@ -30,12 +32,44 @@ Limit data to parameter of interest. Aggregate station data into monthly or year
 
 ```{r}
 const <- "Sodium"
+time1 <- 1972
+time2 <- 1973
+compare <- "year"
 
-df <- filter(data, Param==const)
+df <- mutate(data, month = month(as.Date(SampleDate, format = "%m/%d/%Y")), year = year(as.Date(SampleDate, format = "%m/%d/%Y")), decade = (((year-1900)-((year-1900)%%10))+1900))
 
-df <- arrange(data, StationId, SampleDate)
 
-df <- mutate(data, type = typeof(SampleDate), month =  )
+pivdates <- function(const, time1, time2, compare){
+  df <- filter(df, Param==const, year>=time1, year<=time2)
+  df <- arrange(df, StationId, SampleDate)
+  if (compare=="year"){
+    df <- filter(df, year==time1 | year==time2)
+    df <- group_by(df, StationId, year)
+    values <- unique(summarise(df, median = median(ResultValue)))
+    values <- na.omit(spread(values, year, median, drop=TRUE))
+  } else if (compare=="year-month"){
+    df <- filter(df, year==time1 | year==time2)
+    df <- group_by(df, StationId, month, year) 
+    values <- unique(summarise(df, median = median(ResultValue)))
+    values <- na.omit(spread(values, year, median, drop=TRUE))
+  } else if (compare =="decade"){
+    df <- filter(df, decade==time1 | decade==time2)
+    df <- group_by(df, StationId, decade)
+    values <- unique(summarise(df, median = median(ResultValue)))
+    values <- na.omit(spread(values, decade, median, drop=TRUE))
+  } else if (compare == "monthly"){
+    df <- filter(df, month==time1 | month==time2)
+    df <- group_by(df, StationId, month)
+    values <- unique(summarise(df, median = median(ResultValue)))
+    values <- na.omit(spread(values, month, median, drop=TRUE))
+  } else{
+    values = "none"
+  } 
+
+  return(values)
+}
+
+new_data <- pivdates(const, time1=1971, time2=1975, compare="year")
 
 
 ```
@@ -49,6 +83,14 @@ We followed methods by the USGS from the publication: <a href=http://pubs.usgs.g
 ###Wilcoxon-Pratt signed-rank test###
 wilcoxsign_test(zero.method = c (“Pratt”))
 wilcox.test(immer$Y1, immer$Y2, paired=TRUE) 
+```{r}
+lent <- dim(new_data)[2]
+df <- select(new_data,x = lent-1,y = lent)
+
+res <- wilcoxsign_test(x~y, df, zero.method ="Pratt")
+
+```
+
 
 ###Fisher's Exact test###
 <a href=https://stat.ethz.ch/R-manual/R-patched/library/stats/html/fisher.test.html>function documentation</a>
@@ -63,8 +105,12 @@ fisher.test(x, y = NULL, workspace = 200000, hybrid = FALSE,
 ###Turnbull estimator for median change###
 <http://cran.r-project.org/web/packages/gte/gte.pdf>
 
-Fit <- gte(Surv(L, R, type="interval", event=2) ~ Z, data=simul, z=c(10, 20))
+#```{r}
+time <- 0.15
 
+Fit <- gte(Surv(time=time, type="left", event=2) ~ Z, data=simul, z=c(10, 20))
+
+#```
 
 ##Time-Series Analysis##
 
