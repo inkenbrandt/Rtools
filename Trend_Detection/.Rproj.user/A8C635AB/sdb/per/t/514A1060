@@ -1,0 +1,22 @@
+{
+    "contents" : "",
+    "created" : 1430925280142.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "514A1060",
+    "lastKnownWriteTime" : 7741240722073845761,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "caption" : "dfg",
+        "contentUrl" : "content?title=dfg&file=ad4b52cbd43f41ddb34b87bb93fd3a78.htm",
+        "displayedObservations" : 1000,
+        "displayedVariables" : 17,
+        "totalObservations" : 29262,
+        "variables" : 17
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}
