@@ -66,24 +66,21 @@ img {
 </div>
 
 
-<pre class="r"><code>x &lt;- c(&quot;gte&quot;,&quot;coin&quot;,&quot;dplyr&quot;,&quot;rkt&quot;,&quot;zoo&quot;,&quot;lubridate&quot;,&quot;tidyr&quot;)
+<pre class="r"><code>x &lt;- c(&quot;gte&quot;,&quot;coin&quot;,&quot;NADA&quot;,&quot;fitdistrplus&quot;,&quot;rkt&quot;,&quot;zoo&quot;,&quot;lubridate&quot;,&quot;tidyr&quot;,&quot;dplyr&quot;)
 
 lapply(x, require, character.only=T)</code></pre>
 <pre><code>## Loading required package: gte
 ## Loading required package: survival
 ## Loading required package: coin
-## Loading required package: dplyr
+## Loading required package: NADA
 ## 
-## Attaching package: 'dplyr'
+## Attaching package: 'NADA'
 ## 
 ## The following object is masked from 'package:stats':
 ## 
-##     filter
+##     cor
 ## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-## 
+## Loading required package: fitdistrplus
 ## Loading required package: rkt
 ## Loading required package: zoo
 ## 
@@ -94,7 +91,22 @@ lapply(x, require, character.only=T)</code></pre>
 ##     as.Date, as.Date.numeric
 ## 
 ## Loading required package: lubridate
-## Loading required package: tidyr</code></pre>
+## Loading required package: tidyr
+## Loading required package: dplyr
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:lubridate':
+## 
+##     intersect, setdiff, union
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
 <pre><code>## [[1]]
 ## [1] TRUE
 ## 
@@ -114,6 +126,12 @@ lapply(x, require, character.only=T)</code></pre>
 ## [1] TRUE
 ## 
 ## [[7]]
+## [1] TRUE
+## 
+## [[8]]
+## [1] TRUE
+## 
+## [[9]]
 ## [1] TRUE</code></pre>
 <div id="requirements" class="section level1">
 <h1>Requirements</h1>
@@ -131,39 +149,40 @@ data &lt;- read.csv(&quot;Sample&quot;)
 # Print date downloaded
 dateDownloaded &lt;- date()
 print(paste('File downloaded ',dateDownloaded))</code></pre>
-<pre><code>## [1] &quot;File downloaded  Wed May 06 07:12:08 2015&quot;</code></pre>
+<pre><code>## [1] &quot;File downloaded  Thu May 07 16:30:16 2015&quot;</code></pre>
 <p>Limit data to parameter of interest. Aggregate station data into monthly or yearly datapoints.</p>
 <pre class="r"><code>const &lt;- &quot;Sodium&quot;
 time1 &lt;- 1972
 time2 &lt;- 1973
 compare &lt;- &quot;year&quot;
+grouping &lt;- FALSE
 
 df &lt;- mutate(data, month = month(as.Date(SampleDate, format = &quot;%m/%d/%Y&quot;)), year = year(as.Date(SampleDate, format = &quot;%m/%d/%Y&quot;)), decade = (((year-1900)-((year-1900)%%10))+1900))
 
 
-pivdates &lt;- function(const, time1, time2, compare){
+pivdates &lt;- function(const, t1, t2, compare){
   df &lt;- filter(df, Param==const, year&gt;=time1, year&lt;=time2)
   df &lt;- arrange(df, StationId, SampleDate)
   if (compare==&quot;year&quot;){
     df &lt;- filter(df, year==time1 | year==time2)
-    df &lt;- group_by(df,StationId,year)
-    values &lt;- unique(summarise(df, mean = median(ResultValue)))
-    values &lt;- na.omit(spread(values,year,mean,drop=TRUE))
+    df &lt;- group_by(df, StationId, year)
+    values &lt;- unique(summarise(df, median = median(ResultValue)))
+    values &lt;- na.omit(spread(values, year, median, drop=TRUE))
   } else if (compare==&quot;year-month&quot;){
     df &lt;- filter(df, year==time1 | year==time2)
-    df &lt;- group_by(df,StationId,month, year) 
-    values &lt;- unique(summarise(df, mean = median(ResultValue)))
-    values &lt;- na.omit(spread(values,year,mean,drop=TRUE))
+    df &lt;- group_by(df, StationId, month, year) 
+    values &lt;- unique(summarise(df, median = median(ResultValue)))
+    values &lt;- na.omit(spread(values, year, median, drop=TRUE))
   } else if (compare ==&quot;decade&quot;){
     df &lt;- filter(df, decade==time1 | decade==time2)
-    df &lt;- group_by(df,StationId,decade)
-    values &lt;- unique(summarise(df, mean = median(ResultValue)))
-    values &lt;- na.omit(spread(values,decade,mean,drop=TRUE))
+    df &lt;- group_by(df, StationId, decade)
+    values &lt;- unique(summarise(df, median = median(ResultValue)))
+    values &lt;- na.omit(spread(values, decade, median, drop=TRUE))
   } else if (compare == &quot;monthly&quot;){
     df &lt;- filter(df, month==time1 | month==time2)
-    df &lt;- group_by(df,StationId,month)
-    values &lt;- unique(summarise(df, mean = median(ResultValue)))
-    values &lt;- na.omit(spread(values,month,mean,drop=TRUE))
+    df &lt;- group_by(df, StationId, month)
+    values &lt;- unique(summarise(df, median = median(ResultValue)))
+    values &lt;- na.omit(spread(values, month, median, drop=TRUE))
   } else{
     values = &quot;none&quot;
   } 
@@ -171,7 +190,7 @@ pivdates &lt;- function(const, time1, time2, compare){
   return(values)
 }
 
-new_data &lt;- pivdates(const, time1=1971, time2=1975, compare=&quot;year&quot;)</code></pre>
+new_data &lt;- pivdates(const, t1=time1, t2=time2, compare=&quot;year&quot;)</code></pre>
 </div>
 <div id="analyze-data" class="section level1">
 <h1>Analyze Data</h1>
@@ -183,9 +202,15 @@ new_data &lt;- pivdates(const, time1=1971, time2=1975, compare=&quot;year&quot;)
 <h3>Wilcoxon-Pratt signed-rank test</h3>
 <p>wilcoxsign_test(zero.method = c (“Pratt”)) wilcox.test(immer<span class="math">\(Y1, immer\)</span>Y2, paired=TRUE)</p>
 <pre class="r"><code>lent &lt;- dim(new_data)[2]
-df &lt;- select(new_data,x = lent-1,y = lent)
+new_data2 &lt;- select(new_data,x = lent-1,y = lent, StationId)
 
-res &lt;- wilcoxsign_test(x~y, df, zero.method =&quot;Pratt&quot;)</code></pre>
+res &lt;- wilcoxsign_test(x~y, new_data2, zero.method =&quot;Pratt&quot;)
+
+dfg &lt;- merge(x= new_data2, y= data, by= &quot;StationId&quot;, all.x=TRUE)
+
+if (grouping==TRUE){
+  dfg &lt;- group_by(df,group)
+}</code></pre>
 </div>
 <div id="fishers-exact-test" class="section level3">
 <h3>Fisher’s Exact test</h3>

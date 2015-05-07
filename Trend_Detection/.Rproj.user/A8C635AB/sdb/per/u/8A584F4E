@@ -1,0 +1,17 @@
+{
+    "contents" : "library(NADA)\n",
+    "created" : 1431015536105.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "2727580416",
+    "id" : "8A584F4E",
+    "lastKnownWriteTime" : 178662208,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

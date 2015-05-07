@@ -4,7 +4,7 @@ author: "Paul Inkenbrandt"
 output: html_document
 ---
 ```{r}
-x <- c("gte","coin","dplyr","rkt","zoo","lubridate","tidyr")
+x <- c("gte","coin","NADA","fitdistrplus","rkt","zoo","lubridate","tidyr","dplyr")
 
 lapply(x, require, character.only=T)
 ```
@@ -40,28 +40,28 @@ grouping <- FALSE
 df <- mutate(data, month = month(as.Date(SampleDate, format = "%m/%d/%Y")), year = year(as.Date(SampleDate, format = "%m/%d/%Y")), decade = (((year-1900)-((year-1900)%%10))+1900))
 
 
-pivdates <- function(const, time1, time2, compare){
+pivdates <- function(const, t1, t2, compare){
   df <- filter(df, Param==const, year>=time1, year<=time2)
   df <- arrange(df, StationId, SampleDate)
   if (compare=="year"){
     df <- filter(df, year==time1 | year==time2)
     df <- group_by(df, StationId, year)
-    values <- unique(summarise(df, median = median(ResultValue),min = min(ResultValue), count = count(ResultValue)))
+    values <- unique(summarise(df, median = median(ResultValue)))
     values <- na.omit(spread(values, year, median, drop=TRUE))
   } else if (compare=="year-month"){
     df <- filter(df, year==time1 | year==time2)
     df <- group_by(df, StationId, month, year) 
-    values <- unique(summarise(df, median = median(ResultValue),min = min(ResultValue), count = count(ResultValue)))
+    values <- unique(summarise(df, median = median(ResultValue)))
     values <- na.omit(spread(values, year, median, drop=TRUE))
   } else if (compare =="decade"){
     df <- filter(df, decade==time1 | decade==time2)
     df <- group_by(df, StationId, decade)
-    values <- unique(summarise(df, median = median(ResultValue),min = min(ResultValue), count = count(ResultValue)))
+    values <- unique(summarise(df, median = median(ResultValue)))
     values <- na.omit(spread(values, decade, median, drop=TRUE))
   } else if (compare == "monthly"){
     df <- filter(df, month==time1 | month==time2)
     df <- group_by(df, StationId, month)
-    values <- unique(summarise(df, median = median(ResultValue), min = min(ResultValue), count = count(ResultValue)))
+    values <- unique(summarise(df, median = median(ResultValue)))
     values <- na.omit(spread(values, month, median, drop=TRUE))
   } else{
     values = "none"
@@ -70,7 +70,7 @@ pivdates <- function(const, time1, time2, compare){
   return(values)
 }
 
-new_data <- pivdates(const, time1=1971, time2=1975, compare="year")
+new_data <- pivdates(const, t1=time1, t2=time2, compare="year")
 
 
 ```
