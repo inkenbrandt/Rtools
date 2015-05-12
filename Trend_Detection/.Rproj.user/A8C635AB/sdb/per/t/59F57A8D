@@ -1,0 +1,22 @@
+{
+    "contents" : "",
+    "created" : 1431381573992.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "59F57A8D",
+    "lastKnownWriteTime" : 7741240723082584096,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "caption" : "pie1w",
+        "contentUrl" : "content?title=pie1w&file=8e39979e6f724ced9556223d55f8e641.htm",
+        "displayedObservations" : 310,
+        "displayedVariables" : 4,
+        "totalObservations" : 310,
+        "variables" : 4
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

@@ -1,0 +1,22 @@
+{
+    "contents" : "",
+    "created" : 1431381747750.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "B5C6793C",
+    "lastKnownWriteTime" : 7741240723082584096,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "caption" : "Arsenic",
+        "contentUrl" : "content?title=Arsenic&file=59b23fdfd5f043d2b7c90b45462ad51a.htm",
+        "displayedObservations" : 50,
+        "displayedVariables" : 3,
+        "totalObservations" : 50,
+        "variables" : 3
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

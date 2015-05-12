@@ -1,0 +1,17 @@
+{
+    "contents" : "library(rkt)\n\ndata(pie1w)\ndata(pie1)\nex<-rkt(pie1$Year,pie1$SO4,pie1$Month,pie1$mm,TRUE)\nprint(ex)\nplot(pie1$Year,pie1$SO4)\n#\ndata(pie1w)\nex<-rkt(pie1w$Date,pie1w$SO4)\nblock<-replicate(length(pie1w$Date),1)\nprint(block)\n#print(ex)\n#plot(pie1w$Date,pie1w$SO4)\n\n#rkt(date, y, block, cv, correct = F, rep = \"e\")\n\n# Use site number = block to conduct regional MK test\n# Use month = block to conduct seasonal MK",
+    "created" : 1431381275741.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3054416639",
+    "id" : "FB26B5E1",
+    "lastKnownWriteTime" : 1431471853,
+    "path" : "C:/PROJECTS/EPA EN/Scripts/R/Trend_Detection/rkt_example.R",
+    "project_path" : "rkt_example.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

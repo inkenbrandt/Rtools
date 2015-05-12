@@ -1,0 +1,17 @@
+{
+    "contents" : "library(NADA)\nattach(Oahu)\nLowAs=As*(1-AsCen)\nAsStats=cenmle(As , AsCen , dist=\"gaussian\")\nAsLog= cenmle(As , AsCen, dist=\"lognormal\")\nprint(AsStats)\nprint(AsLog)\n",
+    "created" : 1431015536105.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1743488506",
+    "id" : "8A584F4E",
+    "lastKnownWriteTime" : 1431381271,
+    "path" : "C:/PROJECTS/EPA EN/Scripts/R/Trend_Detection/NADA_cenmle_test.R",
+    "project_path" : "NADA_cenmle_test.R",
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

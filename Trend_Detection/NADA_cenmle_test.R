@@ -1,0 +1,7 @@
+library(NADA)
+attach(Oahu)
+LowAs=As*(1-AsCen)
+AsStats=cenmle(As , AsCen , dist="gaussian")
+AsLog= cenmle(As , AsCen, dist="lognormal")
+print(AsStats)
+print(AsLog)
